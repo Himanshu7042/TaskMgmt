@@ -25,9 +25,11 @@ docker compose up --build
 4. Once healthy, it will automatically run all database migrations (`python manage.py migrate`).
 5. Finally, it will start the Django development server.
 
-### 3. Access the App & Create a Superuser
 You can now navigate to your browser at:
 `http://127.0.0.1:8080/`
+
+### 3. Access the App & Create a Superuser
+
 
 To create an admin superuser account, simply open a new terminal tab and run this inside the running web container:
 ```bash
