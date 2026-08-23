@@ -1,4 +1,4 @@
-# Task Manager - Django Assignment
+# Task Manager - Django
 
 A professional, multi-user task manager built with **Django 5.2.17** and **Python 3.11+**, backed by **MySQL**.
 
