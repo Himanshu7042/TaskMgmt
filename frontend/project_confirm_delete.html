@@ -1,0 +1,11 @@
+{% extends "base.html" %} {% block content %}
+<h2>Delete {{ type }}</h2>
+<p>Are you sure you want to delete the {{ type|lower }} "{{ object }}"?</p>
+<p><strong>This action cannot be undone.</strong></p>
+
+<form method="post">
+  {% csrf_token %}
+  <button type="submit" style="color: red">Yes, delete it</button>
+  <a href="javascript:history.back()">Cancel</a>
+</form>
+{% endblock %}

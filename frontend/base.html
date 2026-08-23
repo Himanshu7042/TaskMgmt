@@ -1,24 +1,31 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>Task Manager</title>
     <style>
-        body { font-family: sans-serif; margin: 20px; }
-        .nav { margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #ccc; }
+      body {
+        font-family: sans-serif;
+        margin: 20px;
+      }
+      .nav {
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #ccc;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="nav">
-        <strong>Task Manager</strong>
-        {% if user.is_authenticated %}
-            | Welcome, {{ user.username }}
-            | <a href="{% url 'dashboard' %}">Dashboard</a>
-            | <form action="{% url 'logout' %}" method="post" style="display:inline;">
-                {% csrf_token %}
-                <button type="submit">Logout</button>
-              </form>
-        {% endif %}
+      <strong>Task Manager</strong>
+      {% if user.is_authenticated %} | Welcome, {{ user.username }} |
+      <a href="{% url 'dashboard' %}">Dashboard</a> |
+      <a href="{% url 'project_list' %}">Projects</a> |
+      <form action="{% url 'logout' %}" method="post" style="display: inline">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+      </form>
+      {% endif %}
     </div>
     {% block content %}{% endblock %}
-</body>
+  </body>
 </html>

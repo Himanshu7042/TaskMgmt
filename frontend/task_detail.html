@@ -1,0 +1,41 @@
+{% extends "base.html" %} {% block content %}
+<h2>{{ task.title }}</h2>
+<p>
+  <strong>Project:</strong>
+  <a href="{% url 'project_detail' task.project.pk %}"
+    >{{ task.project.name }}</a
+  >
+</p>
+<p><strong>Status:</strong> {{ task.get_status_display }}</p>
+<p><strong>Priority:</strong> {{ task.get_priority_display }}</p>
+<p><strong>Due Date:</strong> {{ task.due_date }}</p>
+<p><strong>Assigned To:</strong> {{ task.assigned_to|default:"Unassigned" }}</p>
+
+{% if is_owner %}
+<a href="{% url 'task_update' task.pk %}">Edit Task</a> |
+<a href="{% url 'task_delete' task.pk %}">Delete Task</a>
+{% endif %}
+
+<hr />
+
+<h3>Comments</h3>
+<div style="margin-bottom: 20px">
+  {% for comment in comments %}
+  <div style="border: 1px solid #ddd; padding: 10px; margin-bottom: 10px">
+    <small
+      ><strong>{{ comment.author.username }}</strong> on {{
+      comment.created_at|date:"M d, Y H:i" }}</small
+    >
+    <p style="margin: 5px 0 0 0">{{ comment.body }}</p>
+  </div>
+  {% empty %}
+  <p>No comments yet.</p>
+  {% endfor %}
+</div>
+
+<h4>Add a Comment</h4>
+<form method="post">
+  {% csrf_token %} {{ comment_form.as_p }}
+  <button type="submit">Post Comment</button>
+</form>
+{% endblock %}

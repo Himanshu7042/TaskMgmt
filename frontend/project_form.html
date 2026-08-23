@@ -1,0 +1,8 @@
+{% extends "base.html" %} {% block content %}
+<h2>{% if project %}Edit Project{% else %}New Project{% endif %}</h2>
+<form method="post">
+  {% csrf_token %} {{ form.as_p }}
+  <button type="submit">Save Project</button>
+  <a href="{% url 'project_list' %}">Cancel</a>
+</form>
+{% endblock %}

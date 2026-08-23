@@ -40,5 +40,25 @@
     <p>No tasks.</p>
     {% endfor %}
   </div>
+  {% if overdue_tasks %}
+  <div
+    style="
+      background-color: #ffebee;
+      border: 1px solid #f44336;
+      padding: 10px;
+      margin-bottom: 20px;
+    "
+  >
+    <h3 style="color: #d32f2f; margin-top: 0">⚠️ Overdue Tasks</h3>
+    <ul>
+      {% for task in overdue_tasks %}
+      <li>
+        <strong>{{ task.title }}</strong> (Due: {{ task.due_date }}) - Project:
+        {{ task.project.name }}
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
 </div>
 {% endblock %}

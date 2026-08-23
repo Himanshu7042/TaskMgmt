@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 # Create your models here.
 class Project(models.Model):
@@ -10,6 +11,13 @@ class Project(models.Model):
 
     def __str__(self):
         return self.name
+
+class TaskManager(models.Manager):
+    def overdue(self):
+        today = timezone.now().date()
+        # Returns tasks where due_date is in the past AND status is not DONE
+        return self.filter(due_date__lt=today).exclude(status='DONE')
+
 
 class Task(models.Model):
     STATUS_CHOICES = [
@@ -33,9 +41,12 @@ class Task(models.Model):
     assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='tasks')
     created_at = models.DateTimeField(auto_now_add=True)
 
+    # Hook up the custom manager
+    objects = TaskManager()
+
     class Meta:
         indexes = [
-            models.Index(fields=['due_date'], name='due_date_idx'),
+            models.Index(fields=['status', 'due_date'], name='idx_status_due_date'),
         ]
 
     def __str__(self):
@@ -50,3 +61,6 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"Comment by {self.author.username} on {self.task.title}"
+
+
+

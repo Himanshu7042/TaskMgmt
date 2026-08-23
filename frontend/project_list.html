@@ -1,0 +1,24 @@
+{% extends "base.html" %} {% block content %}
+<h2>Projects</h2>
+<a href="{% url 'project_create' %}">+ Create New Project</a>
+<hr />
+<ul>
+  {% for project in projects %}
+  <li>
+    <a href="{% url 'project_detail' project.pk %}">{{ project.name }}</a>
+    <small>(Owner: {{ project.owner.username }})</small>
+  </li>
+  <li>
+    <a href="{% url 'project_detail' project.pk %}">{{ project.name }}</a>
+    <small>(Owner: {{ project.owner.username }})</small>
+    <br />
+    <small style="color: gray">
+      Tasks: {{ project.todo_count }} To Do | {{ project.in_progress_count }} In
+      Progress | {{ project.done_count }} Done
+    </small>
+  </li>
+  {% empty %}
+  <p>No projects found.</p>
+  {% endfor %}
+</ul>
+{% endblock %}
