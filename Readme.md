@@ -4,7 +4,7 @@ A professional, multi-user task manager built with **Django 5.2.17** and **Pytho
 
 ## Setup & Short Demo
 
-[Watch the Short Demo Video (Google Drive)](https://drive.google.com/file/d/1uWgskSfgcV1IdIp63wRGBUgUfmL0hMds/view?usp=drive_link)
+[![Watch the Short Demo Video](https://drive.google.com/thumbnail?id=1uWgskSfgcV1IdIp63wRGBUgUfmL0hMds&sz=w1280)](https://drive.google.com/file/d/1uWgskSfgcV1IdIp63wRGBUgUfmL0hMds/view?usp=drive_link)
 
 ## Setup Instructions
 
