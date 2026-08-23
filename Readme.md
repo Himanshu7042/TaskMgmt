@@ -2,6 +2,10 @@
 
 A professional, multi-user task manager built with **Django 5.2.17** and **Python 3.11+**, backed by **MySQL**.
 
+## Setup & Short Demo
+
+[Watch the Short Demo Video (Google Drive)](https://drive.google.com/file/d/1uWgskSfgcV1IdIp63wRGBUgUfmL0hMds/view?usp=drive_link)
+
 ## Setup Instructions
 
 This project uses `uv` for lightning-fast dependency management, but standard `pip` works just as well.
