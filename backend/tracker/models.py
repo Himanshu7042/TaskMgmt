@@ -14,7 +14,7 @@ class Project(models.Model):
 
 class TaskManager(models.Manager):
     def overdue(self):
-        today = timezone.now().date()
+        today = timezone.localdate()
         # Returns tasks where due_date is in the past AND status is not DONE
         return self.filter(due_date__lt=today).exclude(status='DONE')
 

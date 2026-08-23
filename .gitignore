@@ -8,9 +8,6 @@ __pycache__/
 env/
 venv/
 
-# Secrets & Configuration
-.env
-
 # OS / IDE
 .DS_Store
 .vscode/

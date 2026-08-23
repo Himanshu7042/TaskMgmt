@@ -7,14 +7,14 @@
         <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
       </div>
       <div>
-        <h2 class="text-xl font-bold text-red-800">Delete Project</h2>
-        <p class="text-sm text-red-600 mt-1">This action cannot be undone. All tasks inside will also be deleted.</p>
+        <h2 class="text-xl font-bold text-red-800">Delete Task</h2>
+        <p class="text-sm text-red-600 mt-1">This action cannot be undone.</p>
       </div>
     </div>
     
     <div class="p-6 sm:p-8">
       <p class="text-gray-700 text-base mb-6">
-        Are you sure you want to permanently delete the project <span class="font-bold text-gray-900">"{{ project.name }}"</span>?
+        Are you sure you want to permanently delete the task <span class="font-bold text-gray-900">"{{ task.title }}"</span>?
       </p>
       
       <form method="post" class="flex items-center justify-end gap-4 mt-8">
@@ -23,7 +23,7 @@
           Cancel
         </a>
         <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors">
-          Yes, delete project
+          Yes, delete task
         </button>
       </form>
     </div>

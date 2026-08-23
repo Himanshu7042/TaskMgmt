@@ -1,41 +1,139 @@
-{% extends "base.html" %} {% block content %}
-<h2>{{ task.title }}</h2>
-<p>
-  <strong>Project:</strong>
-  <a href="{% url 'project_detail' task.project.pk %}"
-    >{{ task.project.name }}</a
-  >
-</p>
-<p><strong>Status:</strong> {{ task.get_status_display }}</p>
-<p><strong>Priority:</strong> {{ task.get_priority_display }}</p>
-<p><strong>Due Date:</strong> {{ task.due_date }}</p>
-<p><strong>Assigned To:</strong> {{ task.assigned_to|default:"Unassigned" }}</p>
-
-{% if is_owner %}
-<a href="{% url 'task_update' task.pk %}">Edit Task</a> |
-<a href="{% url 'task_delete' task.pk %}">Delete Task</a>
-{% endif %}
-
-<hr />
-
-<h3>Comments</h3>
-<div style="margin-bottom: 20px">
-  {% for comment in comments %}
-  <div style="border: 1px solid #ddd; padding: 10px; margin-bottom: 10px">
-    <small
-      ><strong>{{ comment.author.username }}</strong> on {{
-      comment.created_at|date:"M d, Y H:i" }}</small
-    >
-    <p style="margin: 5px 0 0 0">{{ comment.body }}</p>
-  </div>
-  {% empty %}
-  <p>No comments yet.</p>
-  {% endfor %}
+{% extends "base.html" %} 
+{% block content %}
+<div class="mb-4 mt-2">
+  <a href="{% url 'project_detail' task.project.pk %}" class="inline-flex items-center text-sm font-medium text-gray-500 hover:text-brand-600 transition-colors">
+    <svg class="mr-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+    Back to {{ task.project.name }}
+  </a>
 </div>
 
-<h4>Add a Comment</h4>
-<form method="post">
-  {% csrf_token %} {{ comment_form.as_p }}
-  <button type="submit">Post Comment</button>
-</form>
+<div class="flex flex-col lg:flex-row gap-8">
+  <!-- Left Column: Task Details -->
+  <div class="lg:w-2/3">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <div class="p-6 sm:p-8">
+        <div class="flex items-start justify-between mb-4">
+          <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">{{ task.title }}</h2>
+          {% if is_owner %}
+          <div class="flex items-center gap-2 shrink-0">
+            <a href="{% url 'task_update' task.pk %}" class="inline-flex items-center p-2 border border-gray-300 shadow-sm rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none transition-colors" title="Edit">
+              <svg class="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+            </a>
+            <a href="{% url 'task_delete' task.pk %}" class="inline-flex items-center p-2 border border-transparent shadow-sm rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none transition-colors" title="Delete">
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+            </a>
+          </div>
+          {% endif %}
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8">
+          <!-- Status -->
+          <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
+            <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Status</div>
+            <div class="flex items-center">
+              {% if request.user == task.assigned_to or request.user == task.project.owner %}
+              <form method="post" action="{% url 'update_task_status' task.pk %}" class="flex items-center w-full">
+                {% csrf_token %}
+                <select name="status" onchange="this.form.submit()" class="block w-full py-1 text-sm border-gray-300 focus:outline-none focus:ring-brand-500 focus:border-brand-500 rounded-md shadow-sm">
+                  <option value="TO DO" {% if task.status == 'TO DO' %}selected{% endif %}>To Do</option>
+                  <option value="IN PROGRESS" {% if task.status == 'IN PROGRESS' %}selected{% endif %}>In Progress</option>
+                  <option value="DONE" {% if task.status == 'DONE' %}selected{% endif %}>Done</option>
+                </select>
+              </form>
+              {% else %}
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-medium bg-white border border-gray-200 text-gray-800 shadow-sm">
+                {{ task.get_status_display }}
+              </span>
+              {% endif %}
+            </div>
+          </div>
+          
+          <!-- Priority -->
+          <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
+            <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Priority</div>
+            <div class="flex items-center">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-medium bg-white border border-gray-200 text-gray-800 shadow-sm">
+                {{ task.get_priority_display }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Due Date -->
+          <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
+            <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Due Date</div>
+            <div class="flex items-center text-gray-900 font-medium">
+              <svg class="mr-2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+              {{ task.due_date }}
+            </div>
+          </div>
+
+          <!-- Assignee -->
+          <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
+            <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Assignee</div>
+            <div class="flex items-center">
+              {% if task.assigned_to %}
+              <div class="flex items-center gap-2">
+                <div class="h-6 w-6 rounded-full bg-brand-100 flex items-center justify-center text-brand-600 font-bold text-xs">
+                  {{ task.assigned_to.username|make_list|first|upper }}
+                </div>
+                <span class="font-medium text-gray-900">{{ task.assigned_to.username }}</span>
+              </div>
+              {% else %}
+              <span class="text-gray-500 italic">Unassigned</span>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Column: Comments -->
+  <div class="lg:w-1/3 flex flex-col min-h-[500px]">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col h-full overflow-hidden">
+      <div class="p-4 border-b border-gray-200 bg-gray-50">
+        <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+          <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+          Discussion
+        </h3>
+      </div>
+      
+      <div class="flex-1 overflow-y-auto p-4 space-y-4 max-h-[600px]">
+        {% for comment in comments %}
+        <div class="flex gap-3">
+          <div class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold text-xs shrink-0 mt-1">
+            {{ comment.author.username|make_list|first|upper }}
+          </div>
+          <div class="bg-gray-50 rounded-lg rounded-tl-none p-3 border border-gray-100 flex-1">
+            <div class="flex items-baseline justify-between mb-1">
+              <span class="text-sm font-semibold text-gray-900">{{ comment.author.username }}</span>
+              <span class="text-[10px] text-gray-400">{{ comment.created_at|date:"M d, Y H:i" }}</span>
+            </div>
+            <p class="text-sm text-gray-700 whitespace-pre-wrap">{{ comment.body }}</p>
+          </div>
+        </div>
+        {% empty %}
+        <div class="text-center py-10 flex flex-col items-center">
+          <svg class="h-10 w-10 text-gray-300 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"></path></svg>
+          <p class="text-sm text-gray-500">No comments yet. Start the conversation!</p>
+        </div>
+        {% endfor %}
+      </div>
+      
+      <div class="p-4 border-t border-gray-200 bg-gray-50">
+        <form method="post">
+          {% csrf_token %}
+          <div class="mb-3">
+            {{ comment_form.body }}
+          </div>
+          <div class="flex justify-end">
+            <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-brand-600 hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 transition-colors">
+              Post Comment
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

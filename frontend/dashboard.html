@@ -1,0 +1,105 @@
+{% extends "base.html" %} 
+{% block content %}
+<div class="flex justify-between items-center mb-6 mt-2">
+  <h2 class="text-2xl font-bold text-gray-900 tracking-tight">My Tasks</h2>
+</div>
+
+{% if overdue_tasks %}
+<div class="mb-8 bg-red-50 border-l-4 border-red-500 p-4 rounded-md shadow-sm">
+  <div class="flex items-center mb-2">
+    <svg class="h-5 w-5 text-red-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+    <h4 class="text-red-800 font-semibold">Overdue Tasks</h4>
+  </div>
+  <ul class="list-disc list-inside text-sm text-red-700 space-y-1 ml-1">
+    {% for task in overdue_tasks %}
+    <li>
+      <span class="font-medium">{{ task.title }}</span> (Due: {{ task.due_date|date:"M d, Y" }}) -
+      <a href="{% url 'project_detail' task.project.pk %}" class="underline hover:text-red-900">{{ task.project.name }}</a>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+<div class="flex flex-col lg:flex-row gap-6 h-full pb-8">
+  <!-- TO DO COLUMN -->
+  <div class="flex-1 flex flex-col bg-gray-100/50 rounded-xl border border-gray-200 h-[calc(100vh-12rem)] min-h-[400px]">
+    <div class="p-4 border-b border-gray-200 flex justify-between items-center bg-white/50 rounded-t-xl shrink-0">
+      <h5 class="font-semibold text-gray-700 flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-gray-400"></span> To Do
+      </h5>
+      <span class="text-xs font-medium bg-gray-200 text-gray-600 px-2 py-1 rounded-full">{{ todo_tasks|length }}</span>
+    </div>
+    <div class="flex-1 p-3 space-y-3 overflow-y-auto">
+      {% for task in todo_tasks %}
+      <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow group cursor-pointer" onclick="window.location.href='{% url 'task_detail' task.pk %}'">
+        <div class="flex justify-between items-start mb-2">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-gray-500">{{ task.project.name }}</span>
+          <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">{{ task.get_priority_display }}</span>
+        </div>
+        <h6 class="text-sm font-semibold text-gray-900 mb-3 group-hover:text-brand-600 transition-colors">{{ task.title }}</h6>
+        <div class="flex items-center text-xs text-gray-500 gap-1">
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+          {{ task.due_date|date:"M d" }}
+        </div>
+      </div>
+      {% empty %}
+      <div class="text-center py-8 text-sm text-gray-400">No tasks to do.</div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- IN PROGRESS COLUMN -->
+  <div class="flex-1 flex flex-col bg-gray-100/50 rounded-xl border border-gray-200 h-[calc(100vh-12rem)] min-h-[400px]">
+    <div class="p-4 border-b border-gray-200 flex justify-between items-center bg-white/50 rounded-t-xl shrink-0">
+      <h5 class="font-semibold text-brand-700 flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-brand-500"></span> In Progress
+      </h5>
+      <span class="text-xs font-medium bg-brand-100 text-brand-600 px-2 py-1 rounded-full">{{ in_progress_tasks|length }}</span>
+    </div>
+    <div class="flex-1 p-3 space-y-3 overflow-y-auto">
+      {% for task in in_progress_tasks %}
+      <div class="bg-white p-4 rounded-lg shadow-sm border border-brand-200 hover:shadow-md transition-shadow group cursor-pointer" onclick="window.location.href='{% url 'task_detail' task.pk %}'">
+        <div class="flex justify-between items-start mb-2">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-gray-500">{{ task.project.name }}</span>
+          <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-brand-50 text-brand-700 border border-brand-100">{{ task.get_priority_display }}</span>
+        </div>
+        <h6 class="text-sm font-semibold text-gray-900 mb-3 group-hover:text-brand-600 transition-colors">{{ task.title }}</h6>
+        <div class="flex items-center text-xs text-gray-500 gap-1">
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+          {{ task.due_date|date:"M d" }}
+        </div>
+      </div>
+      {% empty %}
+      <div class="text-center py-8 text-sm text-gray-400">No tasks in progress.</div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- DONE COLUMN -->
+  <div class="flex-1 flex flex-col bg-gray-100/50 rounded-xl border border-gray-200 h-[calc(100vh-12rem)] min-h-[400px]">
+    <div class="p-4 border-b border-gray-200 flex justify-between items-center bg-white/50 rounded-t-xl shrink-0">
+      <h5 class="font-semibold text-green-700 flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-green-500"></span> Done
+      </h5>
+      <span class="text-xs font-medium bg-green-100 text-green-600 px-2 py-1 rounded-full">{{ done_tasks|length }}</span>
+    </div>
+    <div class="flex-1 p-3 space-y-3 overflow-y-auto">
+      {% for task in done_tasks %}
+      <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 opacity-75 cursor-pointer hover:opacity-100 transition-opacity" onclick="window.location.href='{% url 'task_detail' task.pk %}'">
+        <div class="flex justify-between items-start mb-2">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400">{{ task.project.name }}</span>
+        </div>
+        <h6 class="text-sm font-medium text-gray-500 line-through mb-3">{{ task.title }}</h6>
+        <div class="flex items-center text-xs text-gray-400 gap-1">
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+          Completed
+        </div>
+      </div>
+      {% empty %}
+      <div class="text-center py-8 text-sm text-gray-400">No completed tasks.</div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}
